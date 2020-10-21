@@ -1,0 +1,18 @@
+dependencies {
+    compile project(':dts-dao')
+
+    implementation "org.hibernate.validator:hibernate-validator"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-mail"
+    implementation "org.springframework.boot:spring-boot-starter-json"
+    implementation "com.github.qcloudsms:qcloudsms:1.0.5"
+    implementation("com.qcloud:cos_api:5.4.4"){
+        exclude group: "org.slf4j", module: "slf4j-log4j12"
+    }
+    implementation "com.aliyun.oss:aliyun-sdk-oss"
+    implementation "org.hibernate.validator:hibernate-validator"
+    implementation "com.qiniu:qiniu-java-sdk"
+    implementation "com.github.binarywang:weixin-java-pay"
+    implementation "com.github.binarywang:weixin-java-miniapp"
+    implementation "org.apache.commons:commons-email:1.5"
+}

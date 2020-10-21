@@ -1,0 +1,5 @@
+rootProject.name = 'dts-shop'
+include 'dts-admin-api'
+include 'dts-core'
+include 'dts-dao'
+include 'dts-wx-api'

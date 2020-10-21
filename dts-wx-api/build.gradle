@@ -1,0 +1,10 @@
+dependencies {
+    compile project(':dts-core')
+    compile project(':dts-dao')
+
+    implementation "org.springframework.boot:spring-boot-starter-mail"
+    implementation("com.github.binarywang:weixin-java-pay"){
+        exclude group: "com.github.binarywang", module: "rcode-utils"
+    }
+    implementation "com.github.binarywang:weixin-java-miniapp"
+}

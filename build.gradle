@@ -1,0 +1,93 @@
+// https://gitee.com/qiguliuxing/dts-shop.git
+group 'com.qiguliuxing'
+version '0.0.1-SNAPSHOT'
+
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven'
+
+    sourceCompatibility = targetJavaVersion
+    targetCompatibility = targetJavaVersion
+
+    [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+    configurations {
+        all*.exclude group: 'commons-logging'
+        developmentOnly
+        runtimeClasspath {
+            extendsFrom developmentOnly
+        }
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+
+    ext {
+        spring_boot_version = "2.0.4.RELEASE"
+        fastjson_version = "1.2.70"
+        jackson_databind_version = "2.9.8"
+        lombok_version = "1.18.12"
+    }
+
+    dependencies {
+        implementation platform('org.springframework.boot:spring-boot-dependencies:2.0.4.RELEASE')
+
+        implementation "org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.2"
+        implementation "com.github.pagehelper:pagehelper-spring-boot-starter:1.2.5"
+        implementation "org.apache.shiro:shiro-spring-boot-web-starter:1.4.0"
+        implementation "org.hibernate.validator:hibernate-validator:6.0.15.Final"
+        implementation "mysql:mysql-connector-java:5.1.46"
+        implementation "com.alibaba:druid-spring-boot-starter:1.1.10"
+        implementation "com.github.binarywang:weixin-java-pay:3.3.0"
+        implementation "com.github.binarywang:weixin-java-miniapp:3.3.0"
+        implementation "com.github.qcloudsms:qcloudsms:1.0.5"
+        implementation "com.aliyun.oss:aliyun-sdk-oss:2.5.0"
+        implementation "com.qiniu:qiniu-java-sdk:[7.2.0, 7.2.99]"
+        implementation "org.springframework.boot:spring-boot-starter-json"
+        implementation "org.springframework.boot:spring-boot-starter-mail"
+        implementation "com.alibaba:fastjson:${fastjson_version}"
+        implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_databind_version}"
+
+        compileOnly "org.projectlombok:lombok:${lombok_version}"
+        annotationProcessor "org.projectlombok:lombok:${lombok_version}"
+        testCompileOnly "org.projectlombok:lombok:${lombok_version}"
+        testAnnotationProcessor "org.projectlombok:lombok:${lombok_version}"
+
+        testCompile "org.springframework.boot:spring-boot-starter-test"
+
+        implementation("com.alibaba:druid-spring-boot-starter:1.1.10"){
+            exclude group: "org.slf4j", module: "slf4j-api"
+        }
+
+        implementation("com.qcloud:cos_api:5.4.4"){
+            exclude group: "org.slf4j", module: "slf4j-log4j12"
+        }
+    }
+
+    sourceSets {
+        main {
+            java {
+                srcDir 'src/main/java'
+            }
+            resources {
+                srcDirs 'src/main/resources'
+            }
+        }
+    }
+
+    jar {
+        manifest {
+            attributes("provider": "Gradle")
+        }
+    }
+}
+
+allprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "http://maven.aliyun.com/nexus/content/groups/public" }
+    }
+    defaultTasks 'clean', 'build', 'assemble'
+}
