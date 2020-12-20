@@ -21,9 +21,9 @@ public class BrandCartGoods implements Serializable {
 
 	private static final Integer DEFAULT_BRAND_ID = 1001000;
 
-	private static final String DEFAULT_BRAND_COMMPANY = "长沙聚惠星自营店";
+	private static final String DEFAULT_BRAND_COMMPANY = "聚惠星自营店";
 
-	private static final String DEFAULT_BRAND_NAME = "长沙聚惠星自营店";
+	private static final String DEFAULT_BRAND_NAME = "聚惠星自营店";
 
 	private Integer brandId;
 

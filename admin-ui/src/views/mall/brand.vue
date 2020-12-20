@@ -29,6 +29,7 @@
 
       <el-table-column align="center" label="操作" width="200" class-name="small-padding fixed-width">
         <template slot-scope="scope">
+          <el-button type="primary" size="mini" @click="shareUrlDetail(scope.row)">推广码</el-button>
           <el-button v-permission="['POST /admin/brand/update']" type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
           <el-button v-permission="['POST /admin/brand/delete']" type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
         </template>
@@ -37,12 +38,30 @@
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
+    <!-- 店铺二维展示框 -->
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="shareUrlDialogVisible" width="700">
+      <el-form :data="dataForm" label-position="left">
+        <el-form-item label="推广二维码">
+          <img :src="dataForm.shareUrl" width="300">
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+    
     <!-- 添加或修改对话框 -->
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="dataForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
         <el-form-item label="品牌商名称" prop="name">
           <el-input v-model="dataForm.name"/>
         </el-form-item>
+        <el-form-item label="主营类目">
+          <el-cascader :options="categoryList" v-model="dataForm.categoryIds" expand-trigger="hover" @change="handleCategoryChange"/>
+        </el-form-item>
+        <el-form-item label="管理员">
+          <el-select v-model="dataForm.adminId">
+            <el-option v-for="item in adminList" :key="item.value" :label="item.label" :value="item.value"/>
+          </el-select>
+        </el-form-item>
+        
         <el-form-item label="介绍" prop="simpleDesc">
           <el-input v-model="dataForm.desc"/>
         </el-form-item>
@@ -99,7 +118,7 @@
 </style>
 
 <script>
-import { listBrand, createBrand, updateBrand, deleteBrand } from '@/api/brand'
+import { listBrand, createBrand, updateBrand, deleteBrand, listCatAndAdmin } from '@/api/brand'
 import { uploadPath } from '@/api/storage'
 import { getToken } from '@/utils/auth'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
@@ -112,6 +131,8 @@ export default {
       uploadPath,
       list: undefined,
       total: 0,
+      categoryList: [],
+      adminList: [],
       listLoading: true,
       listQuery: {
         page: 1,
@@ -126,13 +147,18 @@ export default {
         name: '',
         desc: '',
         floorPrice: undefined,
-        picUrl: undefined
+        picUrl: undefined,
+        categoryIds: [],
+        defaultCategoryId: undefined,
+        adminId: undefined
       },
       dialogFormVisible: false,
+      shareUrlDialogVisible: false,
       dialogStatus: '',
       textMap: {
         update: '编辑',
-        create: '创建'
+        create: '创建',
+        shareUrl: '店铺推广码' 
       },
       rules: {
         name: [
@@ -151,8 +177,15 @@ export default {
   },
   created() {
     this.getList()
+    this.init()
   },
   methods: {
+    init: function() {
+      listCatAndAdmin().then(response => {
+        this.categoryList = response.data.data.categoryList
+        this.adminList = response.data.data.adminList
+      })
+    },
     getList() {
       this.listLoading = true
       listBrand(this.listQuery)
@@ -177,7 +210,10 @@ export default {
         name: '',
         desc: '',
         floorPrice: undefined,
-        picUrl: undefined
+        picUrl: undefined,
+        categoryIds: [],
+        defaultCategoryId: undefined,
+        adminId: undefined
       }
     },
     handleCreate() {
@@ -263,6 +299,17 @@ export default {
             message: response.data.errmsg
           })
         })
+    },
+    handleCategoryChange(value) {
+      this.dataForm.defaultCategoryId = value[value.length - 1]
+    },
+    shareUrlDetail(row) {
+      this.dataForm = Object.assign({}, row)
+      this.dialogStatus = 'shareUrl'
+      this.shareUrlDialogVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataForm'].clearValidate()
+      })
     },
     handleDownload() {
       this.downloadLoading = true

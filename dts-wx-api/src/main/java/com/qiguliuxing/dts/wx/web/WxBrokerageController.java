@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -22,14 +23,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
 import com.qiguliuxing.dts.core.consts.CommConsts;
+import com.qiguliuxing.dts.core.type.BrokerageTypeEnum;
 import com.qiguliuxing.dts.core.util.DateTimeUtil;
 import com.qiguliuxing.dts.core.util.JacksonUtil;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
+import com.qiguliuxing.dts.db.domain.DtsAccountTrace;
 import com.qiguliuxing.dts.db.domain.DtsUserAccount;
 import com.qiguliuxing.dts.db.service.DtsAccountService;
 import com.qiguliuxing.dts.wx.annotation.LoginUser;
 import com.qiguliuxing.dts.wx.service.CaptchaCodeManager;
 import com.qiguliuxing.dts.wx.service.WxOrderService;
+import com.qiguliuxing.dts.wx.util.WxResponseCode;
 import com.qiguliuxing.dts.wx.util.WxResponseUtil;
 
 /**
@@ -178,7 +182,12 @@ public class WxBrokerageController {
 			logger.error("提现申请失败:{}", APPLY_WITHDRAWAL_FAIL.desc());
 			return WxResponseUtil.fail(APPLY_WITHDRAWAL_FAIL);
 		}
-
+		//验证是否存在未审批通过的申请单，需完成上一个申请才能继续申请下一个提现
+		List<DtsAccountTrace> traceList = accountService.getAccountTraceList(userId,BrokerageTypeEnum.SYS_APPLY.getType(),BrokerageTypeEnum.USER_APPLY.getType());
+		if (traceList.size() > 0 ) {
+			logger.error("提现申请失败:{}", WxResponseCode.APPLY_WITHDRAWAL_EXIST.desc());
+			return WxResponseUtil.fail(WxResponseCode.APPLY_WITHDRAWAL_EXIST);
+		}
 		// 生成提现申请记录到账户跟踪表
 		try {
 			accountService.addExtractRecord(userId, applyAmt, mobile, code, remainAmount);

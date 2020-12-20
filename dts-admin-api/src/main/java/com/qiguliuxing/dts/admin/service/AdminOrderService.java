@@ -6,6 +6,7 @@ import static com.qiguliuxing.dts.admin.util.AdminResponseCode.ORDER_REPLY_EXIST
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.binarywang.wxpay.bean.request.WxPayRefundRequest;
 import com.github.pagehelper.PageInfo;
 import com.qiguliuxing.dts.admin.util.AdminResponseUtil;
+import com.qiguliuxing.dts.core.express.ExpressService;
 import com.qiguliuxing.dts.core.notify.NotifyService;
 import com.qiguliuxing.dts.core.notify.NotifyType;
 import com.qiguliuxing.dts.core.util.JacksonUtil;
@@ -50,6 +52,8 @@ public class AdminOrderService {
 	private DtsUserService userService;
 	@Autowired
 	private DtsCommentService commentService;
+	@Autowired
+	private ExpressService expressService;
 	/*
 	 * @Autowired private WxPayService wxPayService;
 	 */
@@ -246,6 +250,26 @@ public class AdminOrderService {
 
 		logger.info("【请求结束】商场管理->订单管理->订单商品回复,响应结果:{}", "成功!");
 		return ResponseUtil.ok();
+	}
+
+	/**
+	 * 快递公司列表
+	 * @return
+	 */
+	public Object listShipChannel() {
+		List<Map<String, String>> vendorMaps = expressService.getAllVendor();
+		List<Map<String, Object>> shipChannelList = new ArrayList<Map<String, Object>>(vendorMaps == null ? 0 : vendorMaps.size());
+		for (Map<String, String> map : vendorMaps) {
+			Map<String, Object> b = new HashMap<>(2);
+			b.put("value", map.get("code"));
+			b.put("label", map.get("name"));
+			shipChannelList.add(b);
+		}
+		
+		Map<String, Object> data = new HashMap<>();
+		data.put("shipChannelList", shipChannelList);
+		logger.info("获取已配置的快递公司总数：{}",shipChannelList.size());
+		return ResponseUtil.ok(data); 
 	}
 
 }

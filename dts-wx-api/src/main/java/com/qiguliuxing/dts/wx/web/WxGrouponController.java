@@ -223,7 +223,7 @@ public class WxGrouponController {
 			return ResponseUtil.badArgumentValue();
 		}
 
-		DtsGoods goods = goodsService.findById(rules.getGoodsId());
+		DtsGoods goods = goodsService.findById(rules.getGoodsId().intValue());
 		if (goods == null) {
 			return ResponseUtil.badArgumentValue();
 		}
@@ -336,7 +336,7 @@ public class WxGrouponController {
 			return WxResponseUtil.fail(GOODS_UNKNOWN);
 		}
 
-		List<DtsGrouponRules> rules = rulesService.queryByGoodsId(goodsId);
+		List<DtsGrouponRules> rules = rulesService.queryByGoodsId(goodsId.longValue());
 
 		logger.info("【请求结束】商品所对应的团购规则,响应结果:{}", JSONObject.toJSONString(rules));
 		return ResponseUtil.ok(rules);

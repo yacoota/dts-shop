@@ -281,7 +281,7 @@ public class AdminGoodsService {
 		return ResponseUtil.ok();
 	}
 
-	public Object list2() {
+	public Object catAndBrand() {
 		// http://element-cn.eleme.io/#/zh-CN/component/cascader
 		// 管理员设置“所属分类”
 		List<DtsCategory> l1CatList = categoryService.queryL1();
@@ -304,11 +304,8 @@ public class AdminGoodsService {
 
 			categoryList.add(l1CatVo);
 		}
-
-		// http://element-cn.eleme.io/#/zh-CN/component/select
-		// 管理员设置“所属品牌商”
 		List<DtsBrand> list = brandService.all();
-		List<Map<String, Object>> brandList = new ArrayList<>(l1CatList.size());
+		List<Map<String, Object>> brandList = new ArrayList<>(list.size());
 		for (DtsBrand brand : list) {
 			Map<String, Object> b = new HashMap<>(2);
 			b.put("value", brand.getId());
@@ -328,6 +325,7 @@ public class AdminGoodsService {
 		List<DtsGoodsSpecification> specifications = specificationService.queryByGid(id);
 		List<DtsGoodsAttribute> attributes = attributeService.queryByGid(id);
 
+		//用于展示商品归属的类目（页面级联下拉控件数据展示）
 		Integer categoryId = goods.getCategoryId();
 		DtsCategory category = categoryService.findById(categoryId);
 		Integer[] categoryIds = new Integer[] {};

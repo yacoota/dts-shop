@@ -1,24 +1,25 @@
 .brand-list .item {
   display: block;
   width: 750rpx;
-  height: 416rpx;
+  height: 500rpx;
   position: relative;
-  margin-bottom: 4rpx;
+  background: #fff;
+  margin-top: 5rpx;
+  margin-bottom: 30rpx;
 }
 
 .brand-list .item .img-bg {
   position: absolute;
   left: 0;
-  top: 0;
   z-index: 0;
   width: 750rpx;
-  height: 417rpx;
+  height: 400rpx;
   overflow: hidden;
 }
 
 .brand-list .item .img-bg image {
   width: 750rpx;
-  height: 416rpx;
+  height: 400rpx;
 }
 
 .brand-list .item .txt-box {
@@ -28,7 +29,7 @@
   display: table;
   z-index: 0;
   width: 750rpx;
-  height: 417rpx;
+  height: 317rpx;
 }
 
 .brand-list .item .line {
@@ -49,4 +50,32 @@
 .brand-list .item .line .s {
   padding: 0 10rpx;
   font-size: 40rpx;
+}
+
+.brand-list .h {
+  height: 100rpx;
+  line-height: 100rpx;
+  margin-left: 31.25rpx;
+  padding-right: 31.25rpx;
+  border-bottom: 1px solid #f4f4f4;
+  font-size: 30rpx;
+  color: #333;
+}
+
+.brand-list .h .l {
+  float: left;
+}
+
+.brand-list .h .r {
+  float: right;
+  margin-top: 19rpx;
+  height: 64.5rpx;
+  margin-right: 5rpx;
+  line-height: 64.5rpx;
+  text-align: center;
+  padding: 0 20rpx;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  color: #fff;
+  background: #85c43f;
 }

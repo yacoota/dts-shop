@@ -70,6 +70,20 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"/>
           </el-upload>
         </el-form-item>
+        <el-form-item label="商品序号或ID">
+          <el-tag v-for="tag in dataForm.goods" :key="tag" closable type="primary" @close="handleClose(tag)">
+            {{ tag }}
+          </el-tag>
+          <el-input
+            v-if="newGoodsVisible"
+            ref="newGoodsInput"
+            v-model="newGoodIdSn"
+            class="input-new-goods"
+            size="small"
+            @keyup.enter.native="handleInputConfirm"
+            @blur="handleInputConfirm"/>
+          <el-button v-else class="button-new-keyword" size="small" type="primary" @click="showInput">+ 增加</el-button>
+        </el-form-item>
         <el-form-item style="width: 700px;" label="专题内容">
           <editor :init="editorInit" v-model="dataForm.content"/>
         </el-form-item>
@@ -112,6 +126,11 @@
   line-height: 120px;
   text-align: center;
 }
+.input-new-goods {
+  width: 90px;
+  margin-left: 10px;
+  vertical-align: bottom;
+}
 .avatar {
   width: 145px;
   height: 145px;
@@ -133,6 +152,8 @@ export default {
   data() {
     return {
       uploadPath,
+      newGoodsVisible: false,
+      newGoodIdSn: '',
       list: undefined,
       total: 0,
       listLoading: true,
@@ -326,6 +347,23 @@ export default {
             message: response.data.errmsg
           })
         })
+    },
+    handleClose(tag) {
+      this.dataForm.goods.splice(this.dataForm.goods.indexOf(tag), 1)
+    },
+    showInput() {
+      this.newGoodsVisible = true
+      this.$nextTick(_ => {
+        this.$refs.newGoodsInput.$refs.input.focus()
+      })
+    },
+    handleInputConfirm() {
+      const newGoodIdSn = this.newGoodIdSn
+      if (newGoodIdSn) {
+        this.dataForm.goods.push(newGoodIdSn)
+      }
+      this.newGoodsVisible = false
+      this.newGoodIdSn = ''
     },
     handleDownload() {
       this.downloadLoading = true

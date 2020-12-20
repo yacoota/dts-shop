@@ -316,7 +316,7 @@ export const asyncRouterMap = [
         name: 'articleEdit',
         meta: {
           perms: ['GET /admin/article/detail', 'POST /admin/article/update'],
-          title: '广告管理',
+          title: '公告通知编辑',
           noCache: true
         },
         hidden: true

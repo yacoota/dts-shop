@@ -96,6 +96,14 @@ Page({
         wx.navigateTo({
           url: '../goods/goods?grouponId=' + id
         });
+      } else if (_type == 'brand') {
+          wx.navigateTo({
+              url: '../brandDetail/brandDetail?id=' + id
+            });
+      } else if (_type == 'topic') {
+           wx.navigateTo({
+               url: '../topicDetail/topicDetail?id=' + id
+             });
       } else {
     	if (id != null){
     		wx.setStorageSync('shareUserId', id);
@@ -160,7 +168,6 @@ Page({
       })
     }
 
-    
   },
   onHide: function() {
     // 页面隐藏

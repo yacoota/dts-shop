@@ -4,8 +4,6 @@
       <image class="img" src="{{brand.picUrl}}" background-size="cover"></image>
       <view class="info-box">
         <view class="info">
-          <text class="txt">{{brand.name}}</text>
-          <text class="line"></text>
         </view>
       </view>
     </view>
@@ -20,7 +18,7 @@
         <navigator class="item {{iindex % 2 == 0 ? 'item-b' : ''}}" url="../goods/goods?id={{iitem.id}}">
           <image class="img" src="{{iitem.picUrl}}" background-size="cover"></image>
           <text class="name">{{iitem.name}}</text>
-          <text class="price">￥{{iitem.retailPrice}}</text>
+          <text class="price jhx_f8">￥{{iitem.retailPrice}}</text>
         </navigator>
       </block>
     </view>

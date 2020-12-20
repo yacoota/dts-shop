@@ -12,6 +12,20 @@ Page({
     commentList: [],
     topicGoods: []
   },
+  onShareAppMessage: function () {
+    let that = this;
+    let userInfo = wx.getStorageSync('userInfo');
+    let shareUserId = 1;
+    if (userInfo) {
+      shareUserId = userInfo.userId;
+    }
+    console.log('/pages/index/index?scene=topic,' + that.data.topic.id + '&shareUserId=' + shareUserId);
+    return {
+      title: that.data.topic.subtitle,
+      //desc: that.data.brand.desc,
+      path: '/pages/index/index?scene=topic,' + that.data.topic.id + '&shareUserId=' + shareUserId
+    }
+  },
   onLoad: function(options) {
     // 页面初始化 options为页面跳转所带来的参数
     var that = this;

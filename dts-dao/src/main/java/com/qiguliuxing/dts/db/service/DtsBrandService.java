@@ -1,20 +1,26 @@
 package com.qiguliuxing.dts.db.service;
 
-import com.github.pagehelper.PageHelper;
-import com.qiguliuxing.dts.db.dao.DtsBrandMapper;
-import com.qiguliuxing.dts.db.domain.DtsBrand;
-import com.qiguliuxing.dts.db.domain.DtsBrandExample;
-import com.qiguliuxing.dts.db.domain.DtsBrand.Column;
+import java.time.LocalDateTime;
+import java.util.List;
+
+import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import javax.annotation.Resource;
-import java.time.LocalDateTime;
-import java.util.List;
+import com.github.pagehelper.PageHelper;
+import com.qiguliuxing.dts.db.dao.DtsBrandMapper;
+import com.qiguliuxing.dts.db.dao.DtsCategoryMapper;
+import com.qiguliuxing.dts.db.domain.DtsBrand;
+import com.qiguliuxing.dts.db.domain.DtsBrand.Column;
+import com.qiguliuxing.dts.db.domain.DtsBrandExample;
+import com.qiguliuxing.dts.db.domain.DtsCategory;
 
 @Service
 public class DtsBrandService {
+	@Resource
+	private DtsCategoryMapper categoryMapper;
+	
 	@Resource
 	private DtsBrandMapper brandMapper;
 	private Column[] columns = new Column[] { Column.id, Column.name, Column.desc, Column.picUrl, Column.floorPrice };
@@ -77,5 +83,15 @@ public class DtsBrandService {
 		DtsBrandExample example = new DtsBrandExample();
 		example.or().andDeletedEqualTo(false);
 		return brandMapper.selectByExample(example);
+	}
+
+	/**
+	 * 根据分类id获取分类名
+	 * @param categoryId
+	 * @return
+	 */
+	public String getBrandCategory(Integer categoryId) {
+		DtsCategory dtsCategory = categoryMapper.selectByPrimaryKey(categoryId);
+		return dtsCategory == null ? "综合" : dtsCategory.getName();
 	}
 }

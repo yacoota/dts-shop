@@ -55,8 +55,8 @@ public class AdminGoodsController {
 	}
 
 	@GetMapping("/catAndBrand")
-	public Object list2() {
-		return adminGoodsService.list2();
+	public Object catAndBrand() {
+		return adminGoodsService.catAndBrand();
 	}
 
 	/**

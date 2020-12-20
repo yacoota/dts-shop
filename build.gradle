@@ -1,4 +1,5 @@
 // https://gitee.com/qiguliuxing/dts-shop.git
+
 group 'com.qiguliuxing'
 version '0.0.1-SNAPSHOT'
 

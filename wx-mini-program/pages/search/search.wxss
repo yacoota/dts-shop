@@ -127,8 +127,8 @@ page {
 }
 
 .search-keywords .item.active {
-  color: #b4282d;
-  border: 1px solid #b4282d;
+  color: #ec4223;
+  border: 1px solid #ec4223;
 }
 
 .shelper-list {
@@ -183,7 +183,7 @@ page {
 }
 
 .sort-box .item.active .txt {
-  color: #b4282d;
+  color: #ec4223;
 }
 
 .sort-box .item.by-price {
@@ -223,8 +223,8 @@ page {
 }
 
 .sort-box-category .item.active {
-  color: #b4282d;
-  border: 1px solid #b4282d;
+  color: #ec4223;
+  border: 1px solid #ec4223;
 }
 
 .cate-item {
@@ -309,7 +309,7 @@ page {
   height: 30rpx;
   text-align: center;
   font-size: 30rpx;
-  color: #b4282d;
+  color: #ec4223;
 }
 
 .search-result-empty {

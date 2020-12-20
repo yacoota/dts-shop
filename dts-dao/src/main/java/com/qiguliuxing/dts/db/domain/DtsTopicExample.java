@@ -219,15 +219,15 @@ public class DtsTopicExample {
             if (value == null) {
                 throw new RuntimeException("Value for " + property + " cannot be null");
             }
-            goodsCriteria.add(new Criterion(condition, value, "com.qiguliuxing.dts.db.mybatis.JsonIntegerArrayTypeHandler"));
+            goodsCriteria.add(new Criterion(condition, value, "com.qiguliuxing.dts.db.mybatis.JsonStringArrayTypeHandler"));
             allCriteria = null;
         }
 
-        protected void addGoodsCriterion(String condition, Integer[] value1, Integer[] value2, String property) {
+        protected void addGoodsCriterion(String condition, String[] value1, String[] value2, String property) {
             if (value1 == null || value2 == null) {
                 throw new RuntimeException("Between values for " + property + " cannot be null");
             }
-            goodsCriteria.add(new Criterion(condition, value1, value2, "com.qiguliuxing.dts.db.mybatis.JsonIntegerArrayTypeHandler"));
+            goodsCriteria.add(new Criterion(condition, value1, value2, "com.qiguliuxing.dts.db.mybatis.JsonStringArrayTypeHandler"));
             allCriteria = null;
         }
 
@@ -1247,7 +1247,7 @@ public class DtsTopicExample {
             return (Criteria) this;
         }
 
-        public Criteria andGoodsEqualTo(Integer[] value) {
+        public Criteria andGoodsEqualTo(String[] value) {
             addGoodsCriterion("goods =", value, "goods");
             return (Criteria) this;
         }
@@ -1264,7 +1264,7 @@ public class DtsTopicExample {
             return (Criteria) this;
         }
 
-        public Criteria andGoodsNotEqualTo(Integer[] value) {
+        public Criteria andGoodsNotEqualTo(String[] value) {
             addGoodsCriterion("goods <>", value, "goods");
             return (Criteria) this;
         }
@@ -1281,7 +1281,7 @@ public class DtsTopicExample {
             return (Criteria) this;
         }
 
-        public Criteria andGoodsGreaterThan(Integer[] value) {
+        public Criteria andGoodsGreaterThan(String[] value) {
             addGoodsCriterion("goods >", value, "goods");
             return (Criteria) this;
         }
@@ -1298,7 +1298,7 @@ public class DtsTopicExample {
             return (Criteria) this;
         }
 
-        public Criteria andGoodsGreaterThanOrEqualTo(Integer[] value) {
+        public Criteria andGoodsGreaterThanOrEqualTo(String[] value) {
             addGoodsCriterion("goods >=", value, "goods");
             return (Criteria) this;
         }
@@ -1315,7 +1315,7 @@ public class DtsTopicExample {
             return (Criteria) this;
         }
 
-        public Criteria andGoodsLessThan(Integer[] value) {
+        public Criteria andGoodsLessThan(String[] value) {
             addGoodsCriterion("goods <", value, "goods");
             return (Criteria) this;
         }
@@ -1332,7 +1332,7 @@ public class DtsTopicExample {
             return (Criteria) this;
         }
 
-        public Criteria andGoodsLessThanOrEqualTo(Integer[] value) {
+        public Criteria andGoodsLessThanOrEqualTo(String[] value) {
             addGoodsCriterion("goods <=", value, "goods");
             return (Criteria) this;
         }
@@ -1349,32 +1349,32 @@ public class DtsTopicExample {
             return (Criteria) this;
         }
 
-        public Criteria andGoodsLike(Integer[] value) {
+        public Criteria andGoodsLike(String[] value) {
             addGoodsCriterion("goods like", value, "goods");
             return (Criteria) this;
         }
 
-        public Criteria andGoodsNotLike(Integer[] value) {
+        public Criteria andGoodsNotLike(String[] value) {
             addGoodsCriterion("goods not like", value, "goods");
             return (Criteria) this;
         }
 
-        public Criteria andGoodsIn(List<Integer[]> values) {
+        public Criteria andGoodsIn(List<String[]> values) {
             addGoodsCriterion("goods in", values, "goods");
             return (Criteria) this;
         }
 
-        public Criteria andGoodsNotIn(List<Integer[]> values) {
+        public Criteria andGoodsNotIn(List<String[]> values) {
             addGoodsCriterion("goods not in", values, "goods");
             return (Criteria) this;
         }
 
-        public Criteria andGoodsBetween(Integer[] value1, Integer[] value2) {
+        public Criteria andGoodsBetween(String[] value1, String[] value2) {
             addGoodsCriterion("goods between", value1, value2, "goods");
             return (Criteria) this;
         }
 
-        public Criteria andGoodsNotBetween(Integer[] value1, Integer[] value2) {
+        public Criteria andGoodsNotBetween(String[] value1, String[] value2) {
             addGoodsCriterion("goods not between", value1, value2, "goods");
             return (Criteria) this;
         }

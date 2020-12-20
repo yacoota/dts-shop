@@ -40,7 +40,7 @@ public class DtsGrouponRules {
      *
      * @mbg.generated
      */
-    private Integer goodsId;
+    private Long goodsId;
 
     /**
      *
@@ -146,7 +146,7 @@ public class DtsGrouponRules {
      *
      * @mbg.generated
      */
-    public Integer getGoodsId() {
+    public Long getGoodsId() {
         return goodsId;
     }
 
@@ -158,7 +158,7 @@ public class DtsGrouponRules {
      *
      * @mbg.generated
      */
-    public void setGoodsId(Integer goodsId) {
+    public void setGoodsId(Long goodsId) {
         this.goodsId = goodsId;
     }
 
@@ -453,7 +453,7 @@ public class DtsGrouponRules {
      */
     public enum Column {
         id("id", "id", "INTEGER", false),
-        goodsId("goods_id", "goodsId", "INTEGER", false),
+        goodsId("goods_id", "goodsId", "BIGINT", false),
         goodsName("goods_name", "goodsName", "VARCHAR", false),
         picUrl("pic_url", "picUrl", "VARCHAR", false),
         discount("discount", "discount", "DECIMAL", false),

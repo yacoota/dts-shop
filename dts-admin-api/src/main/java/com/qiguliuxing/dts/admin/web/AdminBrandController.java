@@ -1,6 +1,7 @@
 package com.qiguliuxing.dts.admin.web;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
@@ -23,11 +25,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.qiguliuxing.dts.admin.annotation.RequiresPermissionsDesc;
+import com.qiguliuxing.dts.admin.service.AdminBrandService;
+import com.qiguliuxing.dts.admin.util.DtsBrandVo;
+import com.qiguliuxing.dts.core.qcode.QCodeService;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.core.validator.Order;
 import com.qiguliuxing.dts.core.validator.Sort;
 import com.qiguliuxing.dts.db.domain.DtsBrand;
+import com.qiguliuxing.dts.db.domain.DtsCategory;
 import com.qiguliuxing.dts.db.service.DtsBrandService;
+import com.qiguliuxing.dts.db.service.DtsCategoryService;
 
 @RestController
 @RequestMapping("/admin/brand")
@@ -37,6 +44,15 @@ public class AdminBrandController {
 
 	@Autowired
 	private DtsBrandService brandService;
+	
+	@Autowired
+	private DtsCategoryService categoryService;
+	
+	@Autowired
+	private AdminBrandService adminBrandService;
+	
+	@Autowired
+	private QCodeService qCodeService;
 
 	@RequiresPermissions("admin:brand:list")
 	@RequiresPermissionsDesc(menu = { "商场管理", "品牌管理" }, button = "查询")
@@ -50,8 +66,25 @@ public class AdminBrandController {
 		List<DtsBrand> brandList = brandService.querySelective(id, name, page, limit, sort, order);
 		long total = PageInfo.of(brandList).getTotal();
 		Map<String, Object> data = new HashMap<>();
+		
+		List<DtsBrandVo> brandVoList = new ArrayList<DtsBrandVo> (brandList == null ? 0 : brandList.size());
+		for(DtsBrand brand : brandList) {
+			DtsBrandVo brandVo = new DtsBrandVo();
+			BeanUtils.copyProperties(brand, brandVo);//对象属性的复制
+			// 用于展示商品归属的类目（页面级联下拉控件数据展示）
+			Integer categoryId = brand.getDefaultCategoryId();
+			DtsCategory category = categoryService.findById(categoryId);
+			Integer[] categoryIds = new Integer[] {};
+			if (category != null) {
+				Integer parentCategoryId = category.getPid();
+				categoryIds = new Integer[] { parentCategoryId, categoryId };
+				brandVo.setCategoryIds(categoryIds);
+			}
+			brandVoList.add(brandVo);
+		}
+		
 		data.put("total", total);
-		data.put("items", brandList);
+		data.put("items", brandVoList);
 
 		logger.info("【请求结束】商场管理->品牌管理->查询:total:{}", total);
 		return ResponseUtil.ok(data);
@@ -84,6 +117,17 @@ public class AdminBrandController {
 		if (error != null) {
 			return error;
 		}
+		
+		try {
+			//生成店铺的分享URL
+			String defaultCategory = brandService.getBrandCategory(brand.getDefaultCategoryId());
+			String shareUrl = qCodeService.createBrandImage(brand.getId(), brand.getPicUrl(), brand.getName(),defaultCategory);
+			brand.setShareUrl(shareUrl);
+		} catch (Exception e) {
+			logger.error("生成品牌商铺分享图URL出错：{}",e.getMessage());
+			e.printStackTrace();
+		}
+		
 		brandService.add(brand);
 		logger.info("【请求结束】商场管理->品牌管理->添加:响应结果:{}", JSONObject.toJSONString(brand));
 		return ResponseUtil.ok(brand);
@@ -111,6 +155,15 @@ public class AdminBrandController {
 		if (error != null) {
 			return error;
 		}
+		try {
+			//生成店铺的分享URL
+			String defaultCategory = brandService.getBrandCategory(brand.getDefaultCategoryId());
+			String shareUrl = qCodeService.createBrandImage(brand.getId(), brand.getPicUrl(), brand.getName(),defaultCategory);
+			brand.setShareUrl(shareUrl);
+		} catch (Exception e) {
+			logger.error("生成品牌商铺分享图URL出错：{}",e.getMessage());
+			e.printStackTrace();
+		}
 		if (brandService.updateById(brand) == 0) {
 			logger.error("商场管理->品牌管理->编辑 失败，更新数据失败！");
 			return ResponseUtil.updatedDataFailed();
@@ -134,6 +187,13 @@ public class AdminBrandController {
 
 		logger.info("【请求结束】商场管理->品牌管理->删除,响应结果:{}", "成功！");
 		return ResponseUtil.ok();
+	}
+	
+	
+	@GetMapping("/catAndAdmin")
+	public Object catAndAdmin() {
+		logger.info("【请求开始】商场管理->品牌管理->获取目录与管理用户");
+		return adminBrandService.catAndAdmin();
 	}
 
 }

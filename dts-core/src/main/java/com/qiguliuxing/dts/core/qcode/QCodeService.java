@@ -100,9 +100,6 @@ public class QCodeService {
 		return "";
 	}
 
-	private String getKeyName(String goodId) {
-		return "GOOD_QCODE_" + goodId + ".jpg";
-	}
 
 	/**
 	 * 将商品图片，商品名字画到模版图中
@@ -129,7 +126,6 @@ public class QCodeService {
 		BufferedImage qrCodeImage = ImageIO.read(qrCodeImg);
 
 		// --- 画图 ---
-
 		// 底层空白 bufferedImage
 		BufferedImage baseImage = new BufferedImage(red.getWidth(), red.getHeight(), BufferedImage.TYPE_4BYTE_ABGR_PRE);
 
@@ -251,9 +247,17 @@ public class QCodeService {
 			e.printStackTrace();
 		}
 		return url;
-		
 	}
 
+	/**
+	 * 分享商品二维码图片在OSS上面的名称
+	 * @param goodId
+	 * @return
+	 */
+	private String getKeyName(String goodId) {
+		return "GOOD_QCODE_" + goodId + ".jpg";
+	}
+	
 	/**
 	 * 分享代理用户二维码图片在OSS上面的名称
 	 * @param userId
@@ -262,4 +266,170 @@ public class QCodeService {
 	private String getShareUserKey(Integer userId) {
 		return "USER_QCODE_" + userId + ".jpg";
 	}
+	
+	/**
+	 * 分享代理用户二维码图片在OSS上面的名称
+	 * @param topicId
+	 * @return
+	 */
+	private String getTopicKey(Integer topicId) {
+		return "TOPIC_QCODE_" + topicId + ".jpg";
+	}
+
+	private String getBrandKey(Integer brandId) {
+		return "BRAND_QCODE_" + brandId + ".jpg";
+	}
+	
+	/**
+	 * 活动主题的二维码图片生成
+	 * @param string
+	 * @param picUrl
+	 * @param subtitle
+	 * @param price
+	 * @return
+	 */
+	public String createShareTopicImage(Integer topicId, String picUrl, String subtitle, BigDecimal price) {
+		if (!SystemConfig.isAutoCreateShareImage())
+			return "";
+		try {
+			// 创建该商品的二维码
+			File file = wxMaService.getQrcodeService().createWxaCodeUnlimit("topic," + topicId, "pages/index/index");
+			FileInputStream inputStream = new FileInputStream(file);
+			// 将商品图片，商品名字,商城名字画到模版图中
+			byte[] imageData = drawTopicPicture(inputStream, picUrl,subtitle,price);
+			ByteArrayInputStream inputStream2 = new ByteArrayInputStream(imageData);
+			// 存储分享图
+			String url = storageService.store(inputStream2, imageData.length, "image/jpeg", getTopicKey(topicId));
+			logger.info("创建活动主题分享图 URL:{}",url);
+			return url;
+		} catch (WxErrorException e) {
+			logger.error("创建活动主题分享二维码 错误:{}",e.getMessage());
+			e.printStackTrace();
+		} catch (Exception e) {
+			logger.error("创建活动主题分享二维码 错误:{}",e.getMessage());
+			e.printStackTrace();
+		}
+		return "";
+	}
+
+	private byte[] drawTopicPicture(FileInputStream qrCodeImg, String picUrl, String subtitle, BigDecimal price) throws IOException {
+		// 底图
+		ClassPathResource redResource = new ClassPathResource("back.png");
+		BufferedImage red = ImageIO.read(redResource.getInputStream());
+
+		// 商品图片
+		URL goodPic = new URL(picUrl);
+		BufferedImage goodImage = ImageIO.read(goodPic);
+
+		// 小程序二维码
+		BufferedImage qrCodeImage = ImageIO.read(qrCodeImg);
+
+		// --- 画图 ---
+		// 底层空白 bufferedImage
+		BufferedImage baseImage = new BufferedImage(red.getWidth(), red.getHeight(), BufferedImage.TYPE_4BYTE_ABGR_PRE);
+
+		// 画上图片
+		drawImgInImg(baseImage, red, 0, 0, red.getWidth(), red.getHeight());
+
+		// 画上商品图片
+		drawImgInImg(baseImage, goodImage, 71, 69, 660, 660);
+
+		// 画上小程序二维码
+		drawImgInImg(baseImage, qrCodeImage, 448, 767, 300, 300);
+
+		// 写上商品名称,截取前面的12个字符长度
+		if (subtitle.length() > 12) {
+			subtitle = subtitle.substring(0, 12) + "...";
+		}
+		Color colorComm = new Color(60, 60, 60);
+		drawTextInImg(baseImage, subtitle, 65, 867, colorComm, 28);
+
+		Color priceColor = new Color(240, 20, 20);
+		drawTextInImg(baseImage, "活动价  ", 65, 787, colorComm, 24);
+		drawTextInImg(baseImage, "￥ ", 140, 787, priceColor, 24);
+		drawTextInImg(baseImage, price.toString(), 165, 787, priceColor, 34);
+		drawTextInImg(baseImage, "起 ", 295, 787, colorComm, 24);
+
+		// 转JPG
+		BufferedImage result = new BufferedImage(baseImage.getWidth(), baseImage.getHeight(),
+				BufferedImage.TYPE_3BYTE_BGR);
+		result.getGraphics().drawImage(baseImage, 0, 0, null);
+		ByteArrayOutputStream bs = new ByteArrayOutputStream();
+		ImageIO.write(result, "jpg", bs);
+
+		// 最终byte数组
+		return bs.toByteArray();
+	}
+
+	public String createBrandImage(Integer brandId, String picUrl, String name, String defaultCategory) {
+		if (!SystemConfig.isAutoCreateShareImage())
+			return "";
+		try {
+			// 创建该商品的二维码
+			File file = wxMaService.getQrcodeService().createWxaCodeUnlimit("brand," + brandId, "pages/index/index");
+			FileInputStream inputStream = new FileInputStream(file);
+			// 将商品图片，商品名字,商城名字画到模版图中
+			byte[] imageData = drawBrandPicture(inputStream, picUrl,name,defaultCategory);
+			ByteArrayInputStream inputStream2 = new ByteArrayInputStream(imageData);
+			// 存储分享图
+			String url = storageService.store(inputStream2, imageData.length, "image/jpeg", getBrandKey(brandId));
+			logger.info("创建品牌商铺主题分享图 URL:{}",url);
+			return url;
+		} catch (WxErrorException e) {
+			logger.error("创建品牌商铺分享二维码 错误:{}",e.getMessage());
+			e.printStackTrace();
+		} catch (Exception e) {
+			logger.error("创建品牌商铺分享二维码 错误:{}",e.getMessage());
+			e.printStackTrace();
+		}
+		return "";
+	}
+
+	private byte[] drawBrandPicture(FileInputStream qrCodeImg, String picUrl, String name, String defaultCategory) throws IOException {
+		// 底图
+		ClassPathResource redResource = new ClassPathResource("back.png");
+		BufferedImage red = ImageIO.read(redResource.getInputStream());
+
+		// 商品图片
+		URL goodPic = new URL(picUrl);
+		BufferedImage goodImage = ImageIO.read(goodPic);
+
+		// 小程序二维码
+		BufferedImage qrCodeImage = ImageIO.read(qrCodeImg);
+
+		// --- 画图 ---
+		// 底层空白 bufferedImage
+		BufferedImage baseImage = new BufferedImage(red.getWidth(), red.getHeight(), BufferedImage.TYPE_4BYTE_ABGR_PRE);
+
+		// 画上图片
+		drawImgInImg(baseImage, red, 0, 0, red.getWidth(), red.getHeight());
+
+		// 画上商品图片
+		drawImgInImg(baseImage, goodImage, 71, 69, 660, 660);
+
+		// 画上小程序二维码
+		drawImgInImg(baseImage, qrCodeImage, 448, 767, 300, 300);
+
+		// 写上商品名称,截取前面的12个字符长度
+		if (name.length() > 12) {
+			name = name.substring(0, 12) + "...";
+		}
+		Color colorComm = new Color(60, 60, 60);
+		drawTextInImg(baseImage, name, 65, 867, colorComm, 28);
+
+		Color priceColor = new Color(240, 20, 20);
+		drawTextInImg(baseImage, "主营【  "+defaultCategory+"】 等商品类目", 65, 787, priceColor, 24);
+
+		// 转JPG
+		BufferedImage result = new BufferedImage(baseImage.getWidth(), baseImage.getHeight(),
+				BufferedImage.TYPE_3BYTE_BGR);
+		result.getGraphics().drawImage(baseImage, 0, 0, null);
+		ByteArrayOutputStream bs = new ByteArrayOutputStream();
+		ImageIO.write(result, "jpg", bs);
+
+		// 最终byte数组
+		return bs.toByteArray();
+	}
+
+	
 }

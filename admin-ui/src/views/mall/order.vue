@@ -110,8 +110,10 @@
     <!-- 发货对话框 -->
     <el-dialog :visible.sync="shipDialogVisible" title="发货">
       <el-form ref="shipForm" :model="shipForm" status-icon label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="快递公司" prop="shipChannel">
-          <el-input v-model="shipForm.shipChannel"/>
+        <el-form-item label="快递公司">
+          <el-select v-model="shipForm.shipChannel">
+            <el-option v-for="item in shipChannelList" :key="item.value" :label="item.label" :value="item.value"/>
+          </el-select>
         </el-form-item>
         <el-form-item label="快递编号" prop="shipSn">
           <el-input v-model="shipForm.shipSn"/>
@@ -144,7 +146,7 @@
 </style>
 
 <script>
-import { listOrder, shipOrder, refundOrder, detailOrder } from '@/api/order'
+import { listOrder, shipOrder, refundOrder, detailOrder , listShipChannel } from '@/api/order'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import checkPermission from '@/utils/permission' // 权限判断函数
 
@@ -173,6 +175,7 @@ export default {
       list: undefined,
       total: 0,
       listLoading: true,
+      shipChannelList: [],
       listQuery: {
         page: 1,
         limit: 20,
@@ -218,6 +221,11 @@ export default {
         this.list = []
         this.total = 0
         this.listLoading = false
+      })
+    },
+    getListShipChannel() {
+        listShipChannel().then(response => {
+        this.shipChannelList = response.data.data.shipChannelList
       })
     },
     handleFilter() {

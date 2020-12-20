@@ -159,6 +159,17 @@ public class DtsGoodsService {
 		example.or().andIdEqualTo(id).andDeletedEqualTo(false);
 		return goodsMapper.selectOneByExampleWithBLOBs(example);
 	}
+	
+	/**
+	 * 根据序列码找到商品
+	 * @param goodsSn
+	 * @return
+	 */
+	public DtsGoods findByGoodsSn(String goodsSn) {
+		DtsGoodsExample example = new DtsGoodsExample();
+		example.or().andGoodsSnEqualTo(goodsSn).andDeletedEqualTo(false);
+		return goodsMapper.selectOneByExampleWithBLOBs(example);
+	}
 
 	/**
 	 * 获取某个商品信息，仅展示相关内容
@@ -169,6 +180,12 @@ public class DtsGoodsService {
 	public DtsGoods findByIdVO(Integer id) {
 		DtsGoodsExample example = new DtsGoodsExample();
 		example.or().andIdEqualTo(id).andIsOnSaleEqualTo(true).andDeletedEqualTo(false);
+		return goodsMapper.selectOneByExampleSelective(example, columns);
+	}
+	
+	public DtsGoods findBySnVO(String sn) {
+		DtsGoodsExample example = new DtsGoodsExample();
+		example.or().andGoodsSnEqualTo(sn).andIsOnSaleEqualTo(true).andDeletedEqualTo(false);
 		return goodsMapper.selectOneByExampleSelective(example, columns);
 	}
 

@@ -79,10 +79,21 @@ public class WxTopicController {
 		DtsTopic topic = topicService.findById(id);
 		data.put("topic", topic);
 		List<DtsGoods> goods = new ArrayList<>();
-		for (Integer i : topic.getGoods()) {
-			DtsGoods good = goodsService.findByIdVO(i);
-			if (null != good)
-				goods.add(good);
+		for (String idOrSn : topic.getGoods()) {
+			try {
+				Long sn = Long.parseLong(idOrSn);
+				DtsGoods good = null;
+				if (sn.intValue() < Integer.MAX_VALUE) {
+					good = goodsService.findByIdVO(sn.intValue());
+				}
+				if (good == null) {//如果配置的不是id,则可能是SN
+					good = goodsService.findBySnVO(idOrSn);
+				}
+				if (null != good) goods.add(good);
+			} catch (Exception e) {
+				logger.info("获取专题详情,根据配置的商品id或sn获取商品详情出错:{}", e.getMessage());
+				e.printStackTrace();
+			}
 		}
 		data.put("goods", goods);
 

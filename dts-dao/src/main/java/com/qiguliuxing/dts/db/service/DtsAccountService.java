@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import com.qiguliuxing.dts.db.dao.ex.AccountMapperEx;
 import com.qiguliuxing.dts.db.domain.DtsAccountTrace;
 import com.qiguliuxing.dts.db.domain.DtsAccountTraceExample;
 import com.qiguliuxing.dts.db.domain.DtsOrder;
+import com.qiguliuxing.dts.db.domain.DtsUser;
 import com.qiguliuxing.dts.db.domain.DtsUserAccount;
 import com.qiguliuxing.dts.db.domain.DtsUserAccountExample;
 import com.qiguliuxing.dts.db.domain.DtsUserExample;
@@ -227,6 +229,31 @@ public class DtsAccountService {
 		userAccount.setCreateTime(LocalDateTime.now());
 		userAccount.setModifyTime(LocalDateTime.now());
 		userAccountMapper.insert(userAccount);
+	}
+
+	/**
+	 * 根据账号和状态，查询提现记录
+	 * @param userId 
+	 * @param types
+	 * @return
+	 */
+	public List<DtsAccountTrace> getAccountTraceList(Integer userId, Byte... types) {
+		if(userId == null || types == null || types.length < 1) {
+			return null;
+		}
+		DtsAccountTraceExample example = new DtsAccountTraceExample();
+		List<Integer> typeInts = new ArrayList<Integer>();
+		for (Byte type : types) {
+			typeInts.add(type.intValue());
+		}
+		example.or().andUserIdEqualTo(userId).andTypeIn(typeInts);
+		return accountTraceMapper.selectByExample(example);
+	}
+
+	public List<DtsAccountTrace> querySelective(String username, String mobile, String type, Integer page,
+			Integer limit, String sort, String order) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

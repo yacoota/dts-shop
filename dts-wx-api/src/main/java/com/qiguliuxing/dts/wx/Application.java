@@ -12,7 +12,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @author CHENBO
  * @QQ:623659388
  */
-@SpringBootApplication(scanBasePackages = { "com.qiguliuxing.dts.db", "com.qiguliuxing.dts.core","com.qiguliuxing.dts.wx" })
+@SpringBootApplication(scanBasePackages = { "com.qiguliuxing.dts.db", "com.qiguliuxing.dts.core",
+		"com.qiguliuxing.dts.wx" })
 @MapperScan({ "com.qiguliuxing.dts.db.dao", "com.qiguliuxing.dts.db.dao.ex" })
 @EnableTransactionManagement
 @EnableScheduling

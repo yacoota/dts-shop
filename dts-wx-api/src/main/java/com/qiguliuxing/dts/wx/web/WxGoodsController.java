@@ -171,7 +171,7 @@ public class WxGoodsController {
 		};
 
 		// 团购信息
-		Callable<List> grouponRulesCallable = () -> rulesService.queryByGoodsId(id);
+		Callable<List> grouponRulesCallable = () -> rulesService.queryByGoodsId(id.longValue());
 
 		// 用户收藏
 		int userHasCollect = 0;

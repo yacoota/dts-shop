@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.qiguliuxing.dts.admin.annotation.RequiresPermissionsDesc;
+import com.qiguliuxing.dts.core.qcode.QCodeService;
 import com.qiguliuxing.dts.core.util.ResponseUtil;
 import com.qiguliuxing.dts.core.validator.Order;
 import com.qiguliuxing.dts.core.validator.Sort;
@@ -38,6 +39,9 @@ public class AdminTopicController {
 	@Autowired
 	private DtsTopicService topicService;
 
+	@Autowired
+	private QCodeService qCodeService;
+	
 	@RequiresPermissions("admin:topic:list")
 	@RequiresPermissionsDesc(menu = { "推广管理", "专题管理" }, button = "查询")
 	@GetMapping("/list")
@@ -83,6 +87,15 @@ public class AdminTopicController {
 		if (error != null) {
 			return error;
 		}
+		try {
+			//生成主题的分享URL
+			String shareUrl = qCodeService.createShareTopicImage(topic.getId(), topic.getPicUrl(), topic.getSubtitle(),topic.getPrice());
+			topic.setShareUrl(shareUrl);
+		} catch (Exception e) {
+			logger.error("专题生成分享图URL出错：{}",e.getMessage());
+			e.printStackTrace();
+		}
+		
 		topicService.add(topic);
 
 		logger.info("【请求结束】推广管理->专题管理->添加:响应结果:{}", JSONObject.toJSONString(topic));
@@ -111,6 +124,15 @@ public class AdminTopicController {
 		if (error != null) {
 			return error;
 		}
+		try {
+			//生成主题的分享URL
+			String shareUrl = qCodeService.createShareTopicImage(topic.getId(), topic.getPicUrl(), topic.getSubtitle(),topic.getPrice());
+			topic.setShareUrl(shareUrl);
+		} catch (Exception e) {
+			logger.error("专题生成分享图URL出错：{}",e.getMessage());
+			e.printStackTrace();
+		}
+		
 		if (topicService.updateById(topic) == 0) {
 			logger.error("推广管理->专题管理->编辑 错误:{}", "更新数据失败!");
 			return ResponseUtil.updatedDataFailed();

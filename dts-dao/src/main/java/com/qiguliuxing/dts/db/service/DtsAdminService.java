@@ -64,4 +64,10 @@ public class DtsAdminService {
 	public DtsAdmin findById(Integer id) {
 		return adminMapper.selectByPrimaryKeySelective(id, result);
 	}
+
+	public List<DtsAdmin> allAdmin() {
+		DtsAdminExample example = new DtsAdminExample();
+		example.or().andDeletedEqualTo(false);
+		return adminMapper.selectByExample(example);
+	}
 }

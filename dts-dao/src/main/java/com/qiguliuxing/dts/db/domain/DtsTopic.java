@@ -94,7 +94,7 @@ public class DtsTopic {
      *
      * @mbg.generated
      */
-    private Integer[] goods;
+    private String[] goods;
 
     /**
      *
@@ -317,7 +317,7 @@ public class DtsTopic {
      *
      * @mbg.generated
      */
-    public Integer[] getGoods() {
+    public String[] getGoods() {
         return goods;
     }
 
@@ -329,7 +329,7 @@ public class DtsTopic {
      *
      * @mbg.generated
      */
-    public void setGoods(Integer[] goods) {
+    public void setGoods(String[] goods) {
         this.goods = goods;
     }
 

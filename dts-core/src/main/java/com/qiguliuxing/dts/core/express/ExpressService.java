@@ -3,6 +3,7 @@ package com.qiguliuxing.dts.core.express;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.util.Base64Utils;
@@ -29,6 +30,16 @@ public class ExpressService {
 
 	public void setProperties(ExpressProperties properties) {
 		this.properties = properties;
+	}
+	
+	/**
+	 * 获取所有物流供应商信息
+	 *
+	 * @param vendorCode
+	 * @return
+	 */
+	public List<Map<String, String>> getAllVendor() {
+		return properties.getVendors();
 	}
 
 	/**

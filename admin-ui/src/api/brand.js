@@ -39,3 +39,10 @@ export function deleteBrand(data) {
     data
   })
 }
+
+export function listCatAndAdmin() {
+  return request({
+    url: '/brand/catAndAdmin',
+    method: 'get'
+  })
+}

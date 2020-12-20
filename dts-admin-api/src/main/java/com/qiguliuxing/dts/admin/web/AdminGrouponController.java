@@ -63,7 +63,7 @@ public class AdminGrouponController {
 				Map<String, Object> RecordData = new HashMap<>();
 				List<DtsGroupon> subGrouponList = grouponService.queryJoinRecord(groupon.getId());
 				DtsGrouponRules rules = rulesService.queryById(groupon.getRulesId());
-				DtsGoods goods = goodsService.findById(rules.getGoodsId());
+				DtsGoods goods = goodsService.findById(rules.getGoodsId().intValue());
 
 				RecordData.put("groupon", groupon);
 				RecordData.put("subGroupons", subGrouponList);
@@ -104,7 +104,7 @@ public class AdminGrouponController {
 	}
 
 	private Object validate(DtsGrouponRules grouponRules) {
-		Integer goodsId = grouponRules.getGoodsId();
+		Long goodsId = grouponRules.getGoodsId();
 		if (goodsId == null) {
 			return ResponseUtil.badArgument();
 		}
@@ -135,7 +135,7 @@ public class AdminGrouponController {
 			return error;
 		}
 
-		Integer goodsId = grouponRules.getGoodsId();
+		Integer goodsId = grouponRules.getGoodsId().intValue();
 		DtsGoods goods = goodsService.findById(goodsId);
 		if (goods == null) {
 			return ResponseUtil.badArgumentValue();
@@ -163,13 +163,24 @@ public class AdminGrouponController {
 		if (error != null) {
 			return error;
 		}
-
-		Integer goodsId = grouponRules.getGoodsId();
-		DtsGoods goods = goodsService.findById(goodsId);
+		Long goodsId = grouponRules.getGoodsId();
+		DtsGoods goods = null;
+		/**
+		 * 如果输入的值为INT范围内，则先用goodsId找,如果超出范围，
+		 * 如果未找到，则转换为goodsSn找再找商品
+		 */
+		if ( goodsId.intValue() < Integer.MAX_VALUE) {
+			goods = goodsService.findById(goodsId.intValue());
+		}
+		if (goods == null) {
+			goods = goodsService.findByGoodsSn(goodsId.toString());
+		}
+		
 		if (goods == null) {
 			return ResponseUtil.badArgumentValue();
 		}
-
+		
+		grouponRules.setGoodsId(goods.getId().longValue());//最终存库只存商品id
 		grouponRules.setGoodsName(goods.getName());
 		grouponRules.setPicUrl(goods.getPicUrl());
 

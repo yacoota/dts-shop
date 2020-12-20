@@ -50,7 +50,7 @@ public class DtsGrouponRulesService {
 	 * @param goodsId
 	 * @return
 	 */
-	public List<DtsGrouponRules> queryByGoodsId(Integer goodsId) {
+	public List<DtsGrouponRules> queryByGoodsId(Long goodsId) {
 		DtsGrouponRulesExample example = new DtsGrouponRulesExample();
 		example.or().andGoodsIdEqualTo(goodsId).andDeletedEqualTo(false);
 		return mapper.selectByExample(example);
@@ -76,7 +76,7 @@ public class DtsGrouponRulesService {
 
 		List<Map<String, Object>> grouponList = new ArrayList<>(grouponRules.size());
 		for (DtsGrouponRules rule : grouponRules) {
-			Integer goodsId = rule.getGoodsId();
+			Integer goodsId = rule.getGoodsId().intValue();
 			DtsGoods goods = goodsMapper.selectByPrimaryKeySelective(goodsId, goodsColumns);
 			if (goods == null)
 				continue;
@@ -117,7 +117,7 @@ public class DtsGrouponRulesService {
 		DtsGrouponRulesExample.Criteria criteria = example.createCriteria();
 
 		if (!StringUtils.isEmpty(goodsId)) {
-			criteria.andGoodsIdEqualTo(Integer.parseInt(goodsId));
+			criteria.andGoodsIdEqualTo(Long.parseLong(goodsId));
 		}
 		criteria.andDeletedEqualTo(false);
 
